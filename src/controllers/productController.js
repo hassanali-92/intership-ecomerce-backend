@@ -3,7 +3,7 @@ import Product from '../models/productModel.js';
 // 🟢 GET ALL PRODUCTS (With Pagination)
 export const getAllProducts = async (req, res) => {
     try {
-        const pageSize = 4; // Ek page par kitne products dikhane hain
+        const pageSize = 6; // Ek page par kitne products dikhane hain
         const page = Number(req.query.pageNumber) || 1; 
 
         // Database mein total kitne products hain, unka count

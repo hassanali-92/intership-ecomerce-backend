@@ -17,8 +17,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.json());
+// 🌟 Purane app.use(cors({...})) ko is se replace karein
 app.use(cors({
-    origin: 'http://localhost:5173', // Aapke frontend ka exact URL
+    origin: function (origin, callback) {
+        // Sab origins ko allow karne ke liye (Localhost aur live Vercel dono chalenge)
+        if (!origin || origin.startsWith('https://intership-ecomerce-frontend-b11n.vercel.app/') || origin.includes('vercel.app')) {
+            callback(null, true);
+        } else {
+            // Deploy hone ke baad secure rakhne ke liye aap direct '*' ya sab allow bhi kar sakte hain temporary:
+            callback(null, true); 
+        }
+    },
     credentials: true
 }));
 

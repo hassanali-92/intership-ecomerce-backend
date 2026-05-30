@@ -2,22 +2,43 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    role: { type: String, enum: ['admin', 'user'], default: 'user' } 
+    name: { 
+        type: String, 
+        required: true 
+    },
+    email: { 
+        type: String, 
+        required: true, 
+        unique: true 
+    },
+    identifier: { 
+        type: String // Admin ke username ya optional tracking ke liye
+    },
+    password: { 
+        type: String, 
+        required: true 
+    },
+    role: { 
+        type: String, 
+        enum: ['admin', 'user'], 
+        default: 'user' 
+    },
+    isApproved: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true });
 
-// Password Hashing Middleware (Auto-hash before saving)
+// 🔥 Auto-hash password before saving (Only if modified)
 userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
     
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    
+   
 });
 
-// Password match karne ka helper method
+// Helper method to compare password during login
 userSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
